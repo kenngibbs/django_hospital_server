@@ -6,7 +6,7 @@ import './App.css';
 let _csrfToken = null;
 
 async function getCsrfToken() {
-    _csrfToken = Cookies.get('csrftoken'); // or the value from settings.CSRF_COOKIE_NAME
+    _csrfToken = Cookies.get('csrftoken');
 
     if (!_csrfToken)
     {
@@ -18,10 +18,11 @@ async function getCsrfToken() {
         _csrfToken = data.csrfToken;
     }
     
+    Cookies.set('csrftoken', _csrfToken);
     return _csrfToken;
 }
 
-function Login() {
+function Login(props) {
     
     const [auth_user, set_auth_user] = useState({});
     const [error, setError] = useState("");
@@ -46,19 +47,16 @@ function Login() {
             body: JSON.stringify(messageBody)
         });
         const data = await response.json();
-        console.log(data);
 
         if (data.result === "false")
             setError(data.message);
         else{
-            console.log("go to home page");
-            console.log(data.hospital_info);
             set_auth_user({
                 'username': data.username,
                 'hospital_info': data.hospital_info,
             })
-            // console.log(auth_user["hospital_info"]);
         }
+        props.sendLogInData(data.username, data.hospital_info);
     }
 
     var submit_login = async(e) =>{
@@ -77,7 +75,6 @@ function Login() {
         <div id="intro_form">
             <h2 id="home_form_label">Log In</h2>
 
-            {/* TODO Once validated, go to home page */}
             <form method="POST" onSubmit={submit_login}>
                 {/* If there is an error, include this line */}
                 {error ?  <h3 id="index_error">{error}</h3> : ""}

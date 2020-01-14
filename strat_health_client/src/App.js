@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Login from './Login';
 import NewContact from './NewContact';
@@ -11,6 +11,15 @@ import {
 
 
 export default function App() {
+  const [loginData, setLoginData] = useState({});
+
+  var sendLogInData = (returnedName, returnedData) =>{
+    setLoginData(
+      {"name": returnedName,
+      "hospital_list": returnedData,
+      });
+  }
+  
   return (
     <Router>
       <Switch>
@@ -18,10 +27,10 @@ export default function App() {
           <NewContact />
         </Route>
         <Route path="/home">
-            <Home />
+            <Home loginData={loginData}/>
         </Route>
         <Route path="/">
-            <Login />
+            <Login sendLogInData={sendLogInData}/>
         </Route>
       </Switch>
     </Router>

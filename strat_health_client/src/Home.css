@@ -31,7 +31,7 @@
   *** Style the entire page ***
   ****************************/
   
-  #index_container{
+  #home_container{
       padding: 0% 8%;
       width: 100vw;
       height: 100vh;
@@ -61,10 +61,9 @@
   }
   
   /* Footer for the 1st CSS Grid */
-  #index_footer{
+  #home_footer{
       text-align: right;
       /*grid-column: 1/4;*/
-      /*grid-row: 3;*/
       grid-column: span 2;
       height: 10%;
       margin-bottom: 3%;

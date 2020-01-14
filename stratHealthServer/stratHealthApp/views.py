@@ -10,7 +10,7 @@ import json
 def login_auth(request):
     body = json.loads(request.body)
     is_user_authenticated=authenticate(username=body["django_username"], password=body["django_password"])
-    print(is_user_authenticated)
+    
     if is_user_authenticated:
         logged_in_user = User.objects.get(username=body["django_username"])
         logged_in_contact_instance = Contact.objects.get(contact_django_user=logged_in_user)
@@ -19,8 +19,8 @@ def login_auth(request):
         # Staff Average, highest paid staff, highest procedure cost, and average procedure cost
         total_salary_for_each_hospital = 0
 
-        hospital_info_list = {}  # Used for the dictionary
-        # hospital_info_list = []  # Used for the list (array)
+        # hospital_info_list = {}  # Used for the dictionary
+        hospital_info_list = []  # Used for the list (array)
 
         # Iterate through the list of all hospitals associated with the logged in contact
         for eachHospital in hospital_list:
@@ -37,7 +37,7 @@ def login_auth(request):
                 total_salary_for_each_hospital += eachStaff.staff_salary
                 if highest_paid_staff_instance.staff_salary < eachStaff.staff_salary:
                     highest_paid_staff_instance = eachStaff
-            print(eachHospital.hospital_name)
+            
             # Get the procedures for each hospital
             total_procedure_cost = 0
             highest_cost_procedure = 0
@@ -46,7 +46,7 @@ def login_auth(request):
             if len(procedures_of_each_hospital) > 0:
                 highest_cost_procedure = procedures_of_each_hospital[0].procedure_cost
             for eachProcedure in procedures_of_each_hospital:
-                print(eachProcedure.procedure_name)
+                
                 total_procedure_cost += eachProcedure.procedure_cost
                 if highest_cost_procedure < eachProcedure.procedure_cost:
                     highest_cost_procedure = eachProcedure.procedure_cost
@@ -60,33 +60,30 @@ def login_auth(request):
             else:
                 avg_procedure_cost = 0
 
-            print(highest_cost_procedure)
-            print(avg_procedure_cost)
-
             # Dictionary of all hospitals with their information provided.
-            hospital_info_list[eachHospital.hospital_name] = {
-                "hospital_address": eachHospital.hospital_address,
-                "salary_average": salary_average,
-                "highest_paid_staff": highest_paid_staff_instance.staff_name,
-                "avg_procedure_cost": avg_procedure_cost,
-                "highest_cost_procedure": highest_cost_procedure,
-                "number_of_procedures": len(procedures_of_each_hospital),
-            }
-
-            # A list(array) of hospital objects with it's necessary information. Same information as above.
-            # Couldn't decided on which one to use.
-
-            # hospital_info_list.append({
+            # hospital_info_list[eachHospital.hospital_name] = {
             #     "hospital_address": eachHospital.hospital_address,
             #     "salary_average": salary_average,
             #     "highest_paid_staff": highest_paid_staff_instance.staff_name,
             #     "avg_procedure_cost": avg_procedure_cost,
             #     "highest_cost_procedure": highest_cost_procedure,
             #     "number_of_procedures": len(procedures_of_each_hospital),
-            # })
+            # }
+
+            # A list(array) of hospital objects with it's necessary information. Same information as above.
+            # Couldn't decided on which one to use.
+
+            hospital_info_list.append({
+                "   ": eachHospital.hospital_name,
+                "hospital_address": eachHospital.hospital_address,
+                "salary_average": salary_average,
+                "highest_paid_staff": highest_paid_staff_instance.staff_name,
+                "avg_procedure_cost": avg_procedure_cost,
+                "highest_cost_procedure": highest_cost_procedure,
+                "number_of_procedures": len(procedures_of_each_hospital),
+            })
             total_salary_for_each_hospital = 0
 
-        print(hospital_info_list)
         return JsonResponse(
             {
                 'result': 'true',
